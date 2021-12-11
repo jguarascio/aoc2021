@@ -3,6 +3,13 @@ from statistics import median
 
 INPUT_FILE = "input-day10.txt"
 
+CHUNK_MARKERS = {
+    ')': '(',
+    ']': '[',
+    '}': '{',
+    '>': '<',
+}
+
 
 def get_lines(filename) -> List:
     with open(filename) as f:
@@ -10,71 +17,62 @@ def get_lines(filename) -> List:
     return lines
 
 
-chunk_markers = {
-    ')':'(',
-    ']':'[',
-    '}':'{',
-    '>':'<',
-}
-
-error_scores = {
-    ')': 3,
-    ']': 57,
-    '}': 1197,
-    '>': 25137
-}
-
-
 def part1():
+    ERROR_SCORES = {
+        ')': 3,
+        ']': 57,
+        '}': 1197,
+        '>': 25137
+    }
     lines = get_lines(INPUT_FILE)
     errors = dict()
     for line in lines:
         chunks = list()
-        for i in range(len(line)):
-            if line[i] in chunk_markers.values():
-                opener = line[i]
-                chunks.append(opener)
-            elif line[i] in chunk_markers.keys():
-                opener = chunk_markers[line[i]]
+        for c in line:
+            if c in CHUNK_MARKERS.values():
+                chunks.append(c)
+            elif c in CHUNK_MARKERS.keys():
+                opener = CHUNK_MARKERS[c]
                 if chunks[len(chunks)-1] == opener:
                     chunks.pop()
                 else:
-                    errors[line[i]] = errors.get(line[i], 0) + 1
+                    errors[c] = errors.get(c, 0) + 1
                     break
     score = 0
     for error in errors:
-        score += error_scores[error] * errors[error]
+        score += ERROR_SCORES[error] * errors[error]
     print(score)
 
     return
 
 
 def part2():
+    VALUES = ['(', '[', '{', '<']
     lines = get_lines(INPUT_FILE)
     scores = list()
     for line in lines:
         discard = False
         chunks = list()
-        for i in range(len(line)):
-            if line[i] in chunk_markers.values():
-                opener = line[i]
-                chunks.append(opener)
-            elif line[i] in chunk_markers.keys():
-                opener = chunk_markers[line[i]]
-                if chunks[len(chunks)-1] == opener:
+        for c in line:
+            if c in CHUNK_MARKERS.values():
+                chunks.append(c)
+            elif c in CHUNK_MARKERS.keys():
+                opener = CHUNK_MARKERS[c]
+                if chunks[-1] == opener:
                     chunks.pop()
                 else:
                     discard = True
                     break
+        
+        # calculate score
         if not discard and len(chunks) > 0:
-            # calculate score
             score = 0
-            values = ['(','[', '{','<']
-            for i in range(len(chunks)-1, -1, -1):
+            chunks.reverse()
+            for i in chunks:
                 score *= 5
-                score += values.index(chunks[i]) + 1
+                score += VALUES.index(i) + 1
             scores.append(score)
-    
+
     print(median(scores))
     return
 
