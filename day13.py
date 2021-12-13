@@ -45,6 +45,8 @@ def part1():
             for i, point in enumerate(points):
                 if point[1] > fold[1]:
                     points[i] = (point[0], fold[1] - (point[1] - fold[1]))
+        
+        # Just process first instruction for part 1
         break
 
     point_count = len(set(points))
@@ -58,8 +60,8 @@ def print_points(points):
     maxx = 0
     maxy = 0
     for point in points:
-        maxx = max(int(point[0]), maxx)
-        maxy = max(int(point[1]), maxy)
+        maxx = max(point[0], maxx)
+        maxy = max(point[1], maxy)
 
     page = [['.' for r in range(maxx+1)] for c in range(maxy+1)]
 
