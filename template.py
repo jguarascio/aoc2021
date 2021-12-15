@@ -3,7 +3,7 @@ from typing import List
 INPUT_FILE = "input.txt"
 
 
-def get_lines(filename) -> List:
+def get_lines(filename: str) -> List:
     with open(filename) as f:
         lines = f.read().splitlines()
     return lines
